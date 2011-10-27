@@ -3,11 +3,11 @@ module IdentityMatcher
         # included is called from the ActiveRecord::Base
         # when you inject this module
 
-        def self.included(base) 
+        def self.included(base)
             # Add acts_as_roled availability by extending the module
             # that owns the function.
             base.extend AddMatchesMethod
-        end 
+        end
 
         # this module stores the main function and the two modules for
         # the instance and class functions
@@ -23,7 +23,7 @@ module IdentityMatcher
                 self.im_options[:email_field]     ||= :email
 
          class_eval <<-END
-           include IdentityMatcher::Methods::InstanceMethods    
+           include IdentityMatcher::Methods::InstanceMethods
          END
             end
 
@@ -32,7 +32,7 @@ module IdentityMatcher
                 foaf = {}
                 cmd = "xsltproc #{RAILS_ROOT}/lib/rdfc14n.xsl - | xsltproc #{RAILS_ROOT}/lib/rdfc2nt.xsl -"
                 ntriples = nil
-                Open3.popen3(cmd) do |stdin,stdout,stderr| 
+                Open3.popen3(cmd) do |stdin,stdout,stderr|
                     stdin.write(foaf_xml)
                     stdin.close
                     ntriples = stdout.read
@@ -151,7 +151,7 @@ module IdentityMatcher
                     }
                     xml = res.body
                     contacts = []
-                    Hpricot.parse(xml).search("//contact").each { |e| 
+                    Hpricot.parse(xml).search("//contact").each { |e|
                         firstname = e.search("profiles/personal/firstname/text()")
                         if firstname.nil?
                             firstname = ""
@@ -217,7 +217,7 @@ module IdentityMatcher
                 users = self.send("find_all_by_#{self.im_options[:email_field]}", contacts.map { |contact| contact["address"] }).uniq
                 emails = users.map(&:email)
                 names = users.map(&:name)
-                unused_contacts = contacts.select { |contact| 
+                unused_contacts = contacts.select { |contact|
                     !emails.include?(contact["email"]) && !names.include?(contact["name"])
                 }
                 return [users, unused_contacts.map { |contact| { :name => contact["name"], :email => contact["address"] } }]
@@ -250,7 +250,7 @@ module IdentityMatcher
                     # debugging capture
                     # open("/tmp/#{token}_#{index}.xml","w").write(res.body)
                     h = Hpricot.XML(res.body)
-                    h.search("//entry").each { |em| 
+                    h.search("//entry").each { |em|
                         if em.at("gd:email")
                             contacts << { 'name' => em.at("title/text()") }.merge(em.at("gd:email").attributes )
                         end
@@ -267,7 +267,7 @@ module IdentityMatcher
                 users = self.send("find_all_by_#{self.im_options[:email_field]}", contacts.map { |contact| contact["address"] }).uniq
                 emails = users.map(&:email)
                 names = users.map(&:name)
-                unused_contacts = contacts.select { |contact| 
+                unused_contacts = contacts.select { |contact|
                     !emails.include?(contact["email"]) && !names.include?(contact["name"])
                 }
                 return [users, unused_contacts.map { |contact| { :name => contact["name"], :email => contact["address"] } }]
@@ -285,8 +285,8 @@ module IdentityMatcher
                 users = self.send("find_all_by_#{self.im_options[:email_field]}", contacts.map(&:email)).uniq
                 emails = users.map(&:email)
                 names = users.map(&:name)
-                unused_contacts = contacts.select { |contact| 
-                    !emails.include?(contact.email) && !names.include?(contact.name) 
+                unused_contacts = contacts.select { |contact|
+                    !emails.include?(contact.email) && !names.include?(contact.name)
                 }
                 return [users, unused_contacts.map { |contact| { :name => contact.name, :email => contact.email } }]
                 #return users
@@ -423,25 +423,25 @@ module IdentityMatcher
                 results = results.select { |x| names.include?(x.name) }.uniq
                 return [results, []]
             end
-    
+
         end
-        
+
 
         # Istance methods
-        module InstanceMethods 
+        module InstanceMethods
             # doing this our target class
             # acquire all the methods inside ClassMethods module
             # as class methods.
 
             def self.included(aClass)
                 aClass.extend ClassMethods
-            end 
+            end
 
             module ClassMethods
-                # Class methods  
+                # Class methods
                 # Our random function.
-            end 
+            end
 
-        end 
+        end
     end
-end 
+end

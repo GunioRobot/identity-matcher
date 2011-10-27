@@ -1,7 +1,7 @@
 IdentityMatcher
 ===============
 
-This is a Rails plugin that adds the ability to import social networks from sites such as Twitter and Gmail. Put it in your vendor/plugins directory. 
+This is a Rails plugin that adds the ability to import social networks from sites such as Twitter and Gmail. Put it in your vendor/plugins directory.
 
 
 Example
